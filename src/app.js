@@ -10,4 +10,8 @@ app.use(cors());
 app.use('/auth', authRoutes);
 app.use('/', protectedRoutes);
 
-app.listen(3000, () => console.log('Servidor rodando na prta 3000'));
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
