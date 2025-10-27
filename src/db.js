@@ -1,6 +1,8 @@
 // src/db.js
 import pkg from 'pg';
 const { Pool } = pkg;
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Cria o pool de conexões com SSL habilitado (necessário para Supabase)
 const pool = new Pool({
@@ -9,7 +11,7 @@ const pool = new Pool({
   database: process.env.PGDATABASE,
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
-  ssl: { rejectUnauthorized: false }
+    ssl: process.env.PGHOST.includes('supabase') ? false : { rejectUnauthorized: false },
 });
 
 // Teste de conexão inicial
