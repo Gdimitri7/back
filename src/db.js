@@ -14,6 +14,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false          // obrigatório
   },
+  family: 4                         // força IPv4   
 });
 
 // Teste de conexão inicial
