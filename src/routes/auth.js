@@ -1,3 +1,4 @@
+// src/routes/auth.js
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -11,16 +12,26 @@ export async function getUserByUsername(username) {
   return res.rows[0];
 }
 
-// Registro de usuário
+// Rota de registro
 router.post('/register', async (req, res) => {
   const { username, password } = req.body;
-  console.log('REQ BODY:', req.body); // <-- checar se username e password chegam
+  console.log('REQ BODY /register:', req.body);
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username e senha obrigatórios' });
+  }
+
   try {
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username e senha obrigatórios' });
+    // Verifica se usuário já existe
+    const existingUser = await getUserByUsername(username);
+    if (existingUser) {
+      return res.status(400).json({ error: 'Usuário já existe' });
     }
+
+    // Criptografa senha e insere
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+
     res.json({ success: true, message: 'Usuário registrado com sucesso' });
   } catch (err) {
     console.error('Erro no register:', err);
@@ -28,13 +39,13 @@ router.post('/register', async (req, res) => {
   }
 });
 
-
-// Login de usuário
+// Rota de login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
+  console.log('REQ BODY /login:', req.body);
 
   if (!username || !password) {
-    return res.status(400).json({ error: 'Username e senha são obrigatórios' });
+    return res.status(400).json({ error: 'Username e senha obrigatórios' });
   }
 
   try {
@@ -44,11 +55,15 @@ router.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ error: 'Senha incorreta' });
 
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: 'JWT_SECRET não definido no .env' });
+    }
+
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     res.json({ token });
   } catch (err) {
-    console.error('Erro real ao fazer login:', err);
-    res.status(500).json({ error: 'Erro ao fazer login' });
+    console.error('Erro no login:', err);
+    res.status(500).json({ error: 'Erro ao fazer login', details: err.message });
   }
 });
 
