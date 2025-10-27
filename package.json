@@ -1,4 +1,12 @@
 {
+  "name": "back",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
@@ -6,12 +14,6 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3",
-    "type": "module"
-  },
-
-  "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "pg": "^8.16.3"
   }
 }
