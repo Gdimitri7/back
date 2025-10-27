@@ -7,11 +7,13 @@ dotenv.config();
 // Cria o pool de conexões com SSL habilitado (necessário para Supabase)
 const pool = new Pool({
   user: process.env.PGUSER,
-  host: process.env.PGHOST,
+  host: process.env.PGHOST,           // IPv4 do Supabase
   database: process.env.PGDATABASE,
   password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
-    ssl: process.env.PGHOST.includes('supabase') ? false : { rejectUnauthorized: false },
+  port: parseInt(process.env.PGPORT, 10),
+  ssl: {
+    rejectUnauthorized: false          // obrigatório
+  },
 });
 
 // Teste de conexão inicial
