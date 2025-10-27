@@ -19,10 +19,10 @@ router.post('/register', async (req, res) => {
       [username, hash]
     );
     res.json({ message: 'Usuário registrado com sucesso', id: result.rows[0].id });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao registrar usuário' });
-  }
+ } catch (err) {
+  console.error('Erro real do Supabase/Postgres:', err);
+  res.status(500).json({ error: 'Erro ao registrar usuário' });
+}
 });
 
 router.post('/login', async (req, res) => {
