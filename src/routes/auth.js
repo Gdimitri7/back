@@ -55,6 +55,17 @@ router.post('/login', async (req, res) => {
     console.error('Erro no login:', err);
     res.status(500).json({ error: 'Erro ao fazer login', details: err.message });
   }
+  // Rota para listar usuários
+router.get('/list', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT id, username, created_at FROM users ORDER BY created_at DESC');
+    res.json({ success: true, users: rows });
+  } catch (err) {
+    console.error('Erro ao listar usuários:', err);
+    res.status(500).json({ error: 'Erro ao listar usuários', details: err.message });
+  }
+});
+
 });
 
 export default router;
