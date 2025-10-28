@@ -3,6 +3,13 @@ const { Pool } = pkg;
 import dotenv from 'dotenv';
 dotenv.config();
 
+import postgres from 'postgres'
+
+const connectionString = process.env.DATABASE_URL
+const sql = postgres(connectionString)
+
+export default sql;
+
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,           // Supabase host
@@ -22,4 +29,3 @@ pool.connect()
     console.error('Erro ao conectar ao banco Supabase:', err.message);
   });
 
-export default pool;
